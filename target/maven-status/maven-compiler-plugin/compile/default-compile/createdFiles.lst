@@ -1,0 +1,11 @@
+com\example\model\Admin.class
+com\example\dao\AdminMapper.class
+com\example\service\impl\NewsServiceImpl.class
+com\example\dao\NewsMapper.class
+com\example\service\AdminService.class
+com\example\service\impl\AdminServiceImpl.class
+com\example\controller\AdminController.class
+com\example\model\News.class
+com\example\controller\NewsController.class
+com\example\service\NewsService.class
+com\example\NewsApplication.class
