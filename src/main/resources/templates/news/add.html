@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>添加新闻</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>添加新闻</h1>
+        
+        <form id="newsForm" class="mt-4">
+            <div class="mb-3">
+                <label for="title" class="form-label">标题</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="content" class="form-label">内容</label>
+                <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="image" class="form-label">图片</label>
+                <input type="file" class="form-control" id="image" name="file" accept="image/*">
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">提交</button>
+                <a href="/news/manage" class="btn btn-secondary">返回</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+    document.getElementById('newsForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('title', document.getElementById('title').value);
+        formData.append('content', document.getElementById('content').value);
+        
+        const imageFile = document.getElementById('image').files[0];
+        if (imageFile) {
+            formData.append('file', imageFile);
+        }
+        
+        fetch('/news/upload', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(result => {
+            alert(result);
+            if (result.includes('成功')) {
+                window.location.href = '/news/manage';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('添加失败：' + error);
+        });
+    });
+    </script>
+</body>
+</html> 

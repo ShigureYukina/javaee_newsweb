@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>编辑新闻</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>编辑新闻</h1>
+        
+        <form id="editForm" class="mt-4">
+            <input type="hidden" id="newsId" th:value="${news.id}">
+            
+            <div class="mb-3">
+                <label for="title" class="form-label">标题</label>
+                <input type="text" class="form-control" id="title" name="title" 
+                       th:value="${news.title}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="content" class="form-label">内容</label>
+                <textarea class="form-control" id="content" name="content" 
+                          rows="10" required th:text="${news.content}"></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="image" class="form-label">图片</label>
+                <input type="file" class="form-control" id="image" name="file" accept="image/*">
+                <div class="mt-2" th:if="${news.imageUrl}">
+                    <img th:src="${news.imageUrl}" class="img-thumbnail" style="max-height: 200px;">
+                    <p class="text-muted">当前图片</p>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="/news/manage" class="btn btn-secondary">返回</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('id', document.getElementById('newsId').value);
+        formData.append('title', document.getElementById('title').value);
+        formData.append('content', document.getElementById('content').value);
+        
+        const imageFile = document.getElementById('image').files[0];
+        if (imageFile) {
+            formData.append('file', imageFile);
+        }
+        
+        fetch('/news/update', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(result => {
+            alert(result);
+            if (result.includes('成功')) {
+                window.location.href = '/news/manage';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('更新失败：' + error);
+        });
+    });
+    </script>
+</body>
+</html> 
