@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.NewsMapper">
+
+    <select id="findAll" resultType="News">
+        SELECT *
+        FROM news
+    </select>
+
+    <select id="findById" parameterType="Long" resultType="News">
+        SELECT * FROM news WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="News">
+        INSERT INTO news(title, content, publish_date) VALUES(#{title}, #{content}, #{publishDate})
+    </insert>
+
+    <update id="update" parameterType="News">
+        UPDATE news SET title=#{title}, content=#{content}, publish_date=#{publishDate} WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM news WHERE id=#{id}
+    </delete>
+</mapper>

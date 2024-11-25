@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Show News</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-
+<div th:replace="fragments/header :: header"></div>
+<div class="container mt-5">
+    <h1>Show News</h1>
+    <p><strong>ID:</strong> <span th:text="${news.id}"></span></p>
+    <p><strong>Title:</strong> <span th:text="${news.title}"></span></p>
+    <p><strong>Publish Date:</strong> <span th:text="${#dates.format(news.publishDate, 'yyyy-MM-dd')}"></span></p>
+    <p><strong>Content:</strong> <span th:text="${news.content}"></span></p>
+    <a th:href="@{/news/{id}/edit(id=${news.id})}" class="btn btn-warning">Edit</a>
+    <form th:action="@{/news/{id}(id=${news.id})}" method="post" style="display:inline;">
+        <input type="hidden" name="_method" value="delete"/>
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    <a href="/news" class="btn btn-secondary">Back to List</a>
+</div>
 </body>
 </html>
