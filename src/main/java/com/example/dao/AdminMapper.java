@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface AdminMapper {
+    @Select("SELECT * FROM admin WHERE username = #{username} AND password = #{password}")
+    Admin findByUsernameAndPassword(String username, String password);
+    
     @Select("SELECT * FROM admin WHERE username = #{username}")
     Admin findByUsername(String username);
 } 

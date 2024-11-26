@@ -1,5 +1,7 @@
 package com.example.service;
 
+import com.example.model.Admin;
+
 public interface AdminService {
-    boolean validateAdmin(String username, String password);
+    Admin login(String username, String password);
 } 

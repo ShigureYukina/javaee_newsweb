@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <title>添加新闻</title>
     <meta charset="UTF-8">
@@ -14,6 +14,11 @@
             <div class="mb-3">
                 <label for="title" class="form-label">标题</label>
                 <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="author" class="form-label">作者</label>
+                <input type="text" class="form-control" id="author" name="author" required>
             </div>
             
             <div class="mb-3">
@@ -39,6 +44,7 @@
         
         const formData = new FormData();
         formData.append('title', document.getElementById('title').value);
+        formData.append('author', document.getElementById('author').value);
         formData.append('content', document.getElementById('content').value);
         
         const imageFile = document.getElementById('image').files[0];

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>管理员登录</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理员登录</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
@@ -16,27 +16,17 @@
                     </div>
                     <div class="card-body">
                         <form id="loginForm">
-                            <div class="form-group">
-                                <label for="username">用户名</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="username"
-                                       name="username" 
-                                       placeholder="请输入用户名"
-                                       title="请输入用户名"
-                                       required>
+                            <div class="mb-3">
+                                <label for="username" class="form-label">用户名</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
                             </div>
-                            <div class="form-group">
-                                <label for="password">密码</label>
-                                <input type="password" 
-                                       class="form-control" 
-                                       id="password"
-                                       name="password" 
-                                       placeholder="请输入密码"
-                                       title="请输入密码"
-                                       required>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">密码</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">登录</button>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">登录</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -44,21 +34,31 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#loginForm').submit(function(e) {
-                e.preventDefault();
-                $.post('/admin/login', $(this).serialize())
-                    .done(function(response) {
-                        if(response === '登录成功') {
-                            window.location.href = '/admin/news/manage';
-                        } else {
-                            alert(response);
-                        }
-                    });
-            });
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('username', document.getElementById('username').value);
+        formData.append('password', document.getElementById('password').value);
+        
+        fetch('/admin/login', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(result => {
+            if (result === 'success') {
+                window.location.href = '/news/manage';
+            } else {
+                alert(result);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('登录失败：' + error);
         });
+    });
     </script>
 </body>
 </html> 
