@@ -1,0 +1,28 @@
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS news_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- 使用数据库
+USE news_db;
+
+-- 创建新闻表
+CREATE TABLE IF NOT EXISTS news (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    content TEXT,
+    image_url VARCHAR(255),
+    author VARCHAR(50) NOT NULL DEFAULT 'admin',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS admin (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 插入默认管理员账号（只在没有管理员账号时插入）
+INSERT INTO admin (username, password) 
+SELECT 'admin', '123456'
+WHERE NOT EXISTS (SELECT 1 FROM admin WHERE username = 'admin');
