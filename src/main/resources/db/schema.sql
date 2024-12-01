@@ -38,7 +38,6 @@ CREATE TABLE IF NOT EXISTS admin (
 );
 
 -- 插入默认管理员账号
--- 仅在管理员表为空时插入
 INSERT INTO admin (username, password) 
 SELECT 'admin', '123456'
 WHERE NOT EXISTS (SELECT 1 FROM admin WHERE username = 'admin');
