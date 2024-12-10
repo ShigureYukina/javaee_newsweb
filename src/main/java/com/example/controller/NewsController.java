@@ -27,79 +27,73 @@ public class NewsController {
 	@Autowired
 	private NewsService newsService;
 
-	// 文件上传目录路径
 	@Value("${upload.dir}")
 	private String uploadDir;
 
 	// 初始化上传目录
 	@PostConstruct
 	public void init() {
-		try {
-			Path uploadPath = Paths.get(uploadDir);
-			if (!Files.exists(uploadPath)) {
-				Files.createDirectories(uploadPath);
-			}
-			// 设置目录权限
-			File uploadDir = uploadPath.toFile();
-			uploadDir.setReadable(true, false);
-			uploadDir.setWritable(true, false);
-			uploadDir.setExecutable(true, false);
-		} catch (IOException e) {
-			throw new RuntimeException("Could not create upload directory!", e);
-		}
+		 newsService.initUploadDir(uploadDir);
 	}
 
+	// 页面请求处理
 	@GetMapping("/manage")
 	public String managePage(Model model) {
 		model.addAttribute("newsList", newsService.getAllNews());
 		return "news/manage";
 	}
 
-	// 添加工具方法处理图片
-	private String saveImage(MultipartFile file, Long newsId) throws IOException {
-		if (file != null && !file.isEmpty()) {
-			String extension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-			String filename = "news_" + newsId + extension;
-			Files.write(Paths.get(uploadDir, filename), file.getBytes());
-			return "uploads/" + filename;
-		}
-		return null;
+	@GetMapping("/add")
+	public String addPage() {
+		return "news/add";
 	}
 
-	// 删除图片文件
-	private void deleteImage(String imageUrl) throws IOException {
-		if (imageUrl != null) {
-			Path imagePath = Paths.get(uploadDir, imageUrl.substring(imageUrl.lastIndexOf("/") + 1));
-			Files.deleteIfExists(imagePath);
-		}
+	@GetMapping("/edit/{id}")
+	public String editPage(@PathVariable Long id, Model model) {
+		model.addAttribute("news", newsService.getNewsById(id));
+		return "news/edit";
 	}
 
-	// 简化后的上传方法
+	@GetMapping("/list")
+	public String listPage(Model model) {
+		model.addAttribute("newsList", newsService.getAllNews());
+		return "news/list";
+	}
+
+	@GetMapping("/view/{id}")
+	public String viewNews(@PathVariable Long id, Model model) {
+		News news = newsService.getNewsById(id);
+		if (news == null) {
+			return "redirect:/news/list";
+		}
+		model.addAttribute("news", news);
+		return "news/view";
+	}
+
+	// API请求处理
 	@PostMapping("/upload")
 	@ResponseBody
 	public String uploadNews(@RequestParam(value = "file", required = false) MultipartFile file,
 			@RequestParam String title, @RequestParam String content, @RequestParam String author) {
 		try {
-			News news = new News();
-			news.setTitle(title);
-			news.setContent(content);
-			news.setAuthor(author);
-			news.setCreateTime(new Date());
-			news.setUpdateTime(new Date());
-			
-			newsService.saveNews(news);
-			String imageUrl = saveImage(file, news.getId());
-			if (imageUrl != null) {
-				news.setImageUrl(imageUrl);
-				newsService.saveNews(news);
-			}
-			return "添加成功";
+			return newsService.createNews(title, content, author, file);
 		} catch (Exception e) {
 			return "添加失败: " + e.getMessage();
 		}
 	}
 
-	// 删除新闻
+	@PostMapping("/update")
+	@ResponseBody
+	public String updateNews(@RequestParam Long id, @RequestParam String title,
+			@RequestParam String content, @RequestParam String author,
+			@RequestParam(required = false) MultipartFile file) {
+		try {
+			return newsService.updateNews(id, title, content, author, file);
+		} catch (Exception e) {
+			return "更新失败: " + e.getMessage();
+		}
+	}
+
 	@PostMapping("/delete/{id}")
 	@ResponseBody
 	public String deleteNews(@PathVariable Long id) {
@@ -173,22 +167,7 @@ public class NewsController {
 	@ResponseBody
 	public String deleteImage(@PathVariable Long id) {
 		try {
-			News news = newsService.getNewsById(id);
-			if (news == null) {
-				return "新闻不存在";
-			}
-
-			// 删除图片文件并更新数据库
-			if (news.getImageUrl() != null) {
-				Path imagePath = Paths.get(uploadDir,
-						news.getImageUrl().substring(news.getImageUrl().lastIndexOf("/") + 1));
-				Files.deleteIfExists(imagePath);
-
-				news.setImageUrl(null);
-				news.setUpdateTime(new Date());
-				newsService.saveNews(news);
-			}
-			return "删除成功";
+			return newsService.deleteNewsImage(id);
 		} catch (Exception e) {
 			return "删除失败: " + e.getMessage();
 		}

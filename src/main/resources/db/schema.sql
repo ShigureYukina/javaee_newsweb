@@ -1,18 +1,20 @@
 -- 创建数据库（如果不存在）
 -- 使用UTF8编码以支持中文
 CREATE DATABASE IF NOT EXISTS news_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS news_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 切换到新闻数据库
 USE news_db;
 
+-- 创建用户表
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- 创建新闻表
--- id: 自增主键
--- title: 新闻标题
--- content: 新闻内容
--- image_url: 图片路径
--- author: 作者名称
--- create_time: 创建时间（自动设置）
--- update_time: 更新时间（自动更新）
 CREATE TABLE IF NOT EXISTS news (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
@@ -24,10 +26,6 @@ CREATE TABLE IF NOT EXISTS news (
 );
 
 -- 创建管理员表
--- id: 自增主键
--- username: 用户名（唯一）
--- password: 密码
--- create_time: 创建时间
 CREATE TABLE IF NOT EXISTS admin (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL UNIQUE,
