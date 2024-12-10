@@ -1,23 +1,34 @@
-// package com.example.interceptor;
+package com.example.interceptor;
 
-// import org.springframework.web.servlet.HandlerInterceptor;
-// import javax.servlet.http.HttpServletRequest;
-// import javax.servlet.http.HttpServletResponse;
-// import javax.servlet.http.HttpSession;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-// // 登录拦截器：拦截需要登录才能访问的请求
-// public class LoginInterceptor implements HandlerInterceptor {
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-// 	@Override
-// 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-// 			throws Exception {
-// 		HttpSession session = request.getSession();
+@Component
+public class LoginInterceptor implements HandlerInterceptor {
 
-// 		// 检查是否已登录，未登录则重定向到登录页
-// 		if (session.getAttribute("admin") == null) {
-// 			response.sendRedirect("/admin/login");
-// 			return false;
-// 		}
-// 		return true;
-// 	}
-// }
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+		// 获取用户 session
+		Object user = request.getSession().getAttribute("user");
+
+		// 允许访问的路径
+		String requestURI = request.getRequestURI();
+		// 允许访问新闻页面、登录和注册页面
+		if (requestURI.startsWith("/news") || requestURI.equals("/user/login") || requestURI.equals("/news/list")
+				|| requestURI.equals("/user/register")) {
+			return true; // 允许访问新闻页面和登录、注册页面
+		}
+
+		// 如果用户未登录，重定向新闻界面
+		if (user == null) {
+			response.sendRedirect("/news/list");
+			return false; // 拦截请求
+		}
+
+		return true; // 继续处理请求
+	}
+}

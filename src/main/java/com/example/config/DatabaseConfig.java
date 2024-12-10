@@ -1,5 +1,6 @@
 package com.example.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import javax.sql.DataSource;
 
 @Configuration
+@MapperScan("com.example.dao")
 public class DatabaseConfig {
 
 	@Value("classpath:db/schema.sql")

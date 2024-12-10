@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.model.News;
+import com.example.model.User;
 import com.example.service.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -143,7 +145,7 @@ public class NewsController {
 
 	// 新闻列表页面
 	@GetMapping("/list")
-	public String listPage(Model model) {
+	public String listPage(HttpSession session, Model model) {
 		List<News> newsList = newsService.getAllNews();
 		model.addAttribute("newsList", newsList);
 		return "news/list";

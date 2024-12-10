@@ -12,6 +12,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
+.history
 
 ### IntelliJ IDEA ###
 .idea
@@ -20,3 +21,5 @@ target/
 *.ipr
 
 /target/
+/uploads/
+
