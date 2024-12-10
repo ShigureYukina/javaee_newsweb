@@ -37,7 +37,17 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new LoginInterceptor())
-				.addPathPatterns("/news/**")
-				.excludePathPatterns("/news/list", "/news/view/**", "/admin/login", "/uploads/**");
+				.addPathPatterns("/**")
+				.excludePathPatterns(
+					"/login",
+					"/doLogin",
+					"/register",
+					"/doRegister",
+					"/static/**",
+					"/news/list",
+					"/news/view/**",
+					"/admin/login",
+					"/admin/logout"
+				);
 	}
 }

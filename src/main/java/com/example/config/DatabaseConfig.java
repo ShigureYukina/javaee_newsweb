@@ -23,27 +23,20 @@ public class DatabaseConfig {
 	private Resource schemaScript;
 
 	/**
-	 * 初始数据SQL脚本文件路径
-	 */
-	@Value("classpath:db/data.sql")
-	private Resource dataScript;
-
-	/**
-	 * 数据库初始化模式配置
-	 * 默认值为"never"，表示不自动初始化
-	 */
-	@Value("${spring.sql.init.mode:never}")
-	private String initMode;
-
-	/**
 	 * 配置数据库初始化器
 	 * @param dataSource 数据源
 	 * @return 数据源初始化器
 	 */
 	@Bean
 	public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
+		ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+		populator.addScript(schemaScript);
+		populator.setContinueOnError(true);
+		populator.setSeparator(";");
+
 		DataSourceInitializer initializer = new DataSourceInitializer();
 		initializer.setDataSource(dataSource);
+		initializer.setDatabasePopulator(populator);
 		return initializer;
 	}
 }

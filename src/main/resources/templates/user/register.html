@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        
+        .register-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            background-color: #218838;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>用户注册</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" required 
+                       placeholder="请输入用户名" title="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="请输入密码" title="请输入密码">
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">确认密码</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required 
+                       placeholder="请再次输入密码" title="请再次输入密码">
+            </div>
+            <button type="submit">注册</button>
+            <div id="errorMessage" class="error-message"></div>
+            <div class="login-link">
+                已有账号？<a href="/login">立即登录</a>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        document.getElementById('registerForm').onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // 验证密码是否一致
+            if (formData.get('password') !== formData.get('confirmPassword')) {
+                errorMessage.textContent = '两次输入的密码不一致';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            fetch('/doRegister', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                switch(result) {
+                    case 'success':
+                        alert('注册成功！');
+                        window.location.href = '/login';
+                        break;
+                    case 'username_exists':
+                        errorMessage.textContent = '用户名已存在';
+                        errorMessage.style.display = 'block';
+                        break;
+                    case 'passwords_not_match':
+                        errorMessage.textContent = '两次输入的密码不一致';
+                        errorMessage.style.display = 'block';
+                        break;
+                    default:
+                        errorMessage.textContent = '注册失败，请稍后重试';
+                        errorMessage.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorMessage.textContent = '注册请求失败，请稍后重试';
+                errorMessage.style.display = 'block';
+            });
+        };
+    </script>
+</body>
+</html> 

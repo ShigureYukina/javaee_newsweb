@@ -36,14 +36,15 @@
 			<div class="container-fluid">
 				<a class="navbar-brand" href="/news/list">新闻列表</a>
 				<div class="d-flex">
-					<div th:if="${session.admin}">
+					<div th:if="${session.loginUser}">
 						<span class="navbar-text me-3">
-							欢迎，<span th:text="${session.admin.username}">管理员</span>
+							欢迎，<span th:text="${session.loginUser}">用户</span>
 						</span>
-						<a href="/news/manage" class="btn btn-primary me-2">管理新闻</a>
-						<a href="/admin/logout" class="btn btn-outline-danger">退出登录</a>
+						<a href="/logout" class="btn btn-outline-danger">退出登录</a>
 					</div>
-					<a th:unless="${session.admin}" href="/admin/login" class="btn btn-outline-primary">管理员登录</a>
+					<div th:unless="${session.loginUser}">
+						<a href="/login" class="btn btn-outline-primary">用户登录</a>
+					</div>
 				</div>
 			</div>
 		</nav>

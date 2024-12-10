@@ -12,71 +12,64 @@
 		rel="stylesheet">
 	<!-- 自定义样式 -->
 	<style>
-		/* 新闻图片样式 */
 		.news-image {
-			max-height: 400px;
-			width: 100%;
-			object-fit: contain;
+			max-width: 100%;
+			height: auto;
+			margin: 20px 0;
 		}
-
-		/* 图片占位符样式 */
-		.image-placeholder {
-			width: 100%;
-			height: 300px;
-			background-color: #f8f9fa;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 0.25rem;
+		
+		.news-content {
+			line-height: 1.8;
+			margin: 20px 0;
 		}
-
-		/* 占位符文本样式 */
-		.placeholder-text {
+		
+		.news-meta {
 			color: #6c757d;
-			font-size: 1.2rem;
+			margin-bottom: 20px;
 		}
 	</style>
 </head>
 
 <body>
 	<div class="container mt-4">
-		<!-- 导航按钮 -->
-		<div class="mb-3">
-			<a href="/news/list" class="btn btn-secondary">返回列表</a>
-			<a href="/news/manage" class="btn btn-primary">返回管理</a>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/news/list">新闻列表</a>
+				<div class="d-flex">
+					<div th:if="${session.loginUser}">
+						<span class="navbar-text me-3">
+							欢迎，<span th:text="${session.loginUser}">用户</span>
+						</span>
+						<a href="/logout" class="btn btn-outline-danger">退出登录</a>
+					</div>
+					<div th:unless="${session.loginUser}">
+						<a href="/login" class="btn btn-outline-primary">用户登录</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div class="card">
+			<div class="card-body">
+				<h2 class="card-title" th:text="${news.title}">新闻标题</h2>
+				<div class="news-meta">
+					<span>作者：</span><span th:text="${news.author}">作者</span>
+					<span class="mx-3">|</span>
+					<span>发布时间：</span><span th:text="${#dates.format(news.createTime, 'yyyy-MM-dd HH:mm')}">时间</span>
+				</div>
+				
+				<img th:if="${news.imageUrl}" th:src="@{'/' + ${news.imageUrl}}" class="news-image" 
+					 th:alt="${news.title}" th:title="${news.title}">
+				
+				<div class="news-content" th:text="${news.content}">
+					新闻内容
+				</div>
+				
+				<div class="mt-4">
+					<a href="/news/list" class="btn btn-primary">返回列表</a>
+				</div>
+			</div>
 		</div>
-
-		<!-- 新闻内容区 -->
-		<article class="mt-4">
-			<!-- 新闻标题 -->
-			<h1 class="mb-4" th:text="${news.title}">新闻标题</h1>
-
-			<!-- 新闻信息 -->
-			<div class="text-muted mb-4">
-				<small>作者：<span th:text="${news.author}">作者</span></small><br>
-				<small>创建时间：<span
-						th:text="${#dates.format(news.createTime, 'yyyy-MM-dd HH:mm')}">创建时间</span></small><br>
-				<small>最后修改：<span th:text="${#dates.format(news.updateTime, 'yyyy-MM-dd HH:mm')}">修改时间</span></small>
-			</div>
-
-			<!-- 新闻图片区域 -->
-			<div class="mb-4 text-center">
-				<!-- 有图片时显示图片 -->
-				<div th:if="${news.imageUrl}">
-					<img th:src="@{'/' + ${news.imageUrl}}" th:alt="${news.title}" th:title="${news.title}"
-						class="news-image rounded">
-				</div>
-				<!-- 无图片时显示占位符 -->
-				<div th:unless="${news.imageUrl}" class="image-placeholder">
-					<span class="placeholder-text">暂无图片</span>
-				</div>
-			</div>
-
-			<!-- 新闻正文 -->
-			<div class="news-content">
-				<p th:text="${news.content}" style="white-space: pre-line;">新闻内容</p>
-			</div>
-		</article>
 	</div>
 </body>
 
