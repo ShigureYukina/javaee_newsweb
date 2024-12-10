@@ -30,8 +30,8 @@ public class UserController {
 	// 处理注册请求
 	@PostMapping("/register")
 	public String register(@RequestParam String username,
-			@RequestParam String password,
-			@RequestParam String email) {
+						   @RequestParam String password,
+						   @RequestParam String email) {
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword(password); // 请确保密码在存储前进行加密
@@ -44,8 +44,8 @@ public class UserController {
 	@PostMapping("/login")
 	@ResponseBody
 	public String login(@RequestParam String username,
-			@RequestParam String password,
-			HttpSession session) {
+						@RequestParam String password,
+						HttpSession session) {
 		User user = userService.login(username, password);
 		if (user != null) {
 			session.setAttribute("user", user);
