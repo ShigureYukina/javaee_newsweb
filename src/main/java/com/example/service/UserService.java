@@ -16,4 +16,8 @@ public interface UserService {
 	User getUserById(Long id); // 根据ID获取用户
 
 	void updateUser(User user); // 更新用户信息
+
+	boolean checkUsernameExists(String username, Long id);
+
+	boolean checkEmailExists(String email, Long id);
 }

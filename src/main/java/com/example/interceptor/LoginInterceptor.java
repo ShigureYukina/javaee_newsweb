@@ -20,14 +20,19 @@ public class LoginInterceptor implements HandlerInterceptor {
 		String requestURI = request.getRequestURI();
 		// 允许访问登录、注册和管理员登录页面
 		if (requestURI.equals("/user/login") || requestURI.equals("/user/register")
-				|| requestURI.equals("/admin/login") || requestURI.equals("/news/list")) {
+				|| requestURI.equals("/admin/login")) {
 			return true; // 允许访问登录、注册和管理员登录页面
 		}
 
 		// 如果用户未登录，重定向到登录页面并添加提示信息
-		if (requestURI.equals("/user/manage") || admin == null) {
+		if (requestURI.equals("/user/manage") && admin == null) {
 			request.getSession().setAttribute("loginError", "请先登录"); // 设置提示信息
-			response.sendRedirect("/admin/login");
+			response.sendRedirect("/user/login");
+			return false; // 拦截请求
+		}
+		if (requestURI.equals("/news/manage") && admin == null) {
+			request.getSession().setAttribute("loginError", "请先登录"); // 设置提示信息
+			response.sendRedirect("/user/login");
 			return false; // 拦截请求
 		}
 

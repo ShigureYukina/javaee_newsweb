@@ -1,12 +1,7 @@
 package com.example.dao;
 
 import com.example.model.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -16,18 +11,35 @@ public interface UserMapper {
 	@Select("SELECT * FROM users WHERE username = #{username} AND password = #{password}")
 	User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
+	// 插入新用户
 	@Insert("INSERT INTO users (username, password, email) VALUES (#{username}, #{password}, #{email})")
 	void insertUser(User user);
 
+	// 获取所有用户
 	@Select("SELECT * FROM users")
-	List<User> findAll(); // 获取所有用户
+	List<User> findAll();
 
+	// 根据ID查找用户
 	@Select("SELECT * FROM users WHERE id = #{id}")
-	User findById(Long id); // 根据ID查找用户
+	User findById(Long id);
 
+	// 更新用户信息（不包括密码）
+	@Update("UPDATE users SET username=#{username}, email=#{email} WHERE id=#{id}")
+	void updateWithoutPassword(User user);
+
+	// 更新用户信息（包括密码）
 	@Update("UPDATE users SET username=#{username}, password=#{password}, email=#{email} WHERE id=#{id}")
-	void update(User user); // 更新用户信息
+	void updateWithPassword(User user);
 
+	// 根据ID删除用户
 	@Delete("DELETE FROM users WHERE id = #{id}")
-	void deleteById(Long id); // 根据ID删除用户
+	void deleteById(Long id);
+
+	// 检查用户名是否已存在
+	@Select("SELECT COUNT(*) FROM users WHERE username = #{username} AND id != #{id}")
+	int checkUsernameExists(@Param("username") String username, @Param("id") Long id);
+
+	// 检查邮箱是否已存在
+	@Select("SELECT COUNT(*) FROM users WHERE email = #{email} AND id != #{id}")
+	int checkEmailExists(@Param("email") String email, @Param("id") Long id);
 }

@@ -26,21 +26,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userMapper.findAll(); // 假设您在 UserMapper 中有 findAll 方法
+        return userMapper.findAll();
     }
 
     @Override
     public void deleteUser(Long id) {
-        userMapper.deleteById(id); // 假设您在 UserMapper 中有 deleteById 方法
+        userMapper.deleteById(id);
     }
 
     @Override
     public User getUserById(Long id) {
-        return userMapper.findById(id); // 假设您在 UserMapper 中有 findById 方法
+        return userMapper.findById(id);
     }
 
     @Override
     public void updateUser(User user) {
-        userMapper.update(user); // 假设您在 UserMapper 中有 update 方法
+        // 如果密码为空，则不更新密码
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            userMapper.updateWithoutPassword(user);
+        } else {
+            userMapper.updateWithPassword(user);
+        }
+    }
+
+    @Override
+    public boolean checkUsernameExists(String username, Long id) {
+        return userMapper.checkUsernameExists(username, id) > 0;
+    }
+
+    @Override
+    public boolean checkEmailExists(String email, Long id) {
+        return userMapper.checkEmailExists(email, id) > 0;
     }
 } 

@@ -65,7 +65,12 @@ public class UserController {
 
 	// 用户管理页面
 	@GetMapping("/manage")
-	public String managePage(Model model) {
+	public String managePage(Model model, HttpSession session) {
+		// 检查管理员身份
+		if (session.getAttribute("admin") == null) {
+			return "redirect:/admin/login"; // 如果未登录，重定向到管理员登录页面
+		}
+		
 		List<User> userList = userService.getAllUsers(); // 获取所有用户
 		model.addAttribute("userList", userList); // 将用户列表添加到模型中
 		return "user/manage"; // 返回用户管理页面
