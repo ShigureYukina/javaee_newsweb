@@ -15,18 +15,18 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
-	// 登录页面
+	// 管理员登录页面
 	@GetMapping("/login")
 	public String loginPage() {
 		return "admin/login";
 	}
 
-	// 处理登录请求
+	// 处理管理员登录请求
 	@PostMapping("/login")
 	@ResponseBody
 	public String login(@RequestParam String username,
-						@RequestParam String password,
-						HttpSession session) {
+			@RequestParam String password,
+			HttpSession session) {
 		Admin admin = adminService.login(username, password);
 		if (admin != null) {
 			session.setAttribute("admin", admin);
@@ -41,4 +41,5 @@ public class AdminController {
 		session.removeAttribute("admin");
 		return "redirect:/admin/login";
 	}
+	
 }

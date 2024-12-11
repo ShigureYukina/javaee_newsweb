@@ -51,7 +51,7 @@ public class NewsController {
 	@GetMapping("/manage")
 	public String managePage(Model model) {
 		model.addAttribute("newsList", newsService.getAllNews());
-		return "news/manage";
+		return "admin/manage";
 	}
 
 	// 添加工具方法处理图片
@@ -77,7 +77,7 @@ public class NewsController {
 	@PostMapping("/upload")
 	@ResponseBody
 	public String uploadNews(@RequestParam(value = "file", required = false) MultipartFile file,
-							 @RequestParam String title, @RequestParam String content, @RequestParam String author) {
+			@RequestParam String title, @RequestParam String content, @RequestParam String author) {
 		try {
 			News news = new News();
 			news.setTitle(title);
@@ -121,8 +121,8 @@ public class NewsController {
 	@PostMapping("/update")
 	@ResponseBody
 	public String updateNews(@RequestParam Long id, @RequestParam String title,
-							 @RequestParam String content, @RequestParam String author,
-							 @RequestParam(required = false) MultipartFile file) {
+			@RequestParam String content, @RequestParam String author,
+			@RequestParam(required = false) MultipartFile file) {
 		try {
 			News news = newsService.getNewsById(id);
 			news.setTitle(title);

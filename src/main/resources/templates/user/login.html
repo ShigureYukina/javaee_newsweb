@@ -18,6 +18,7 @@
 					<h3>用户登录</h3>
 				</div>
 				<div class="card-body">
+					<div th:if="${session.loginError}" class="alert alert-danger" th:text="${session.loginError}"></div>
 					<form id="loginForm">
 						<div class="mb-3">
 							<label for="username" class="form-label">用户名</label>
@@ -45,7 +46,6 @@
 			</div>
 		</div>
 	</div>
-</div>
 </div>
 
 <script>

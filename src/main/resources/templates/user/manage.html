@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理</title>
+    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>用户管理</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>邮箱</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${userList}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td>
+                        <a th:href="@{/user/edit/{id}(id=${user.id})}" class="btn btn-warning btn-sm">编辑</a>
+                        <button th:onclick="'deleteUser(' + ${user.id} + ')' " class="btn btn-danger btn-sm">删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/user/add" class="btn btn-primary">添加用户</a>
+    </div>
+
+    <script>
+        function deleteUser(id) {
+            if (confirm('确定要删除该用户吗？')) {
+                fetch('/user/delete/' + id, {
+                    method: 'POST'
+                })
+                .then(response => response.text())
+                .then(result => {
+                    alert(result);
+                    location.reload(); // 刷新页面以更新用户列表
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('删除失败：' + error);
+                });
+            }
+        }
+    </script>
+</body>
+
+</html> 
