@@ -2,152 +2,113 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>用户管理</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 引入外部样式 -->
-    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css"
-        rel="stylesheet">
+	<title>用户管理</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- 引入外部样式 -->
+	<link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css"
+		rel="stylesheet">
 </head>
 
 <body>
-    <div class="container mt-4">
-        <!-- 顶部导航栏 -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/user/manage">用户管理系统</a>
-                <div class="d-flex">
-                    <span class="navbar-text me-3">
-                        欢迎，<span th:text="${session.admin.username}">管理员</span>
-                    </span>
-                    <a href="/admin/logout" class="btn btn-outline-danger">退出登录</a>
-                </div>
-            </div>
-        </nav>
+	<div class="container mt-4">
+		<!-- 顶部导航栏 -->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/user/manage">用户管理系统</a>
+				<div class="d-flex">
+					<span class="navbar-text me-3">
+						欢迎，<span th:text="${session.admin.username}">管理员</span>
+					</span>
+					<a href="/admin/logout" class="btn btn-outline-danger">退出登录</a>
+				</div>
+			</div>
+		</nav>
 
-        <!-- 功能按钮区 -->
-        <div class="mb-3">
-            <a href="/user/add" class="btn btn-primary">添加用户</a>
-            <a href="/news/manage" class="btn btn-outline-primary">新闻管理</a>
-        </div>
+		<!-- 功能按钮区 -->
+		<div class="mb-3">
+			<a href="/news/manage" class="btn btn-outline-primary">返回新闻管理</a>
+		</div>
 
-        <!-- 用户统计信息 -->
-        <div class="mb-3">
-            <p th:text="${'现有用户总数: ' + #lists.size(userList)}" class="text-muted"></p>
-            <p th:if="${#lists.isEmpty(userList)}" class="alert alert-info">暂无用户数据</p>
-        </div>
+		<!-- 用户统计信息 -->
+		<div class="mb-3">
+			<p id="user-count" th:text="${'现有用户总数: ' + #lists.size(userList)}" class="text-muted"></p>
+			<p th:if="${#lists.isEmpty(userList)}" class="alert alert-info">暂无用户数据</p>
+		</div>
 
-        <!-- 用户列表表格 -->
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>用户名</th>
-                        <th>邮箱</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- 用户列表项 -->
-                    <tr th:each="user : ${userList}">
-                        <td th:text="${user.id}">1</td>
-                        <td th:text="${user.username}">用户名</td>
-                        <td th:text="${user.email}">邮箱</td>
-                        <!-- 操作按钮组 -->
-                        <td>
-                            <div class="btn-group">
-                                <a th:href="@{'/user/edit/' + ${user.id}}" class="btn btn-sm btn-warning">编辑</a>
-                                <button onclick="deleteUser(this)" th:data-id="${user.id}"
-                                    class="btn btn-sm btn-danger">删除</button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+		<!-- 用户列表表格 -->
+		<div class="table-responsive">
+			<table class="table table-striped table-hover">
+				<thead class="table-dark">
+					<tr>
+						<th>ID</th>
+						<th>用户名</th>
+						<th>邮箱</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- 用户列表项 -->
+					<tr th:each="user : ${userList}">
+						<td th:text="${user.id}">1</td>
+						<td th:text="${user.username}">用户名</td>
+						<td th:text="${user.email}">邮箱</td>
+						<!-- 操作按钮组 -->
+						<td>
+							<div class="btn-group">
+								<a th:href="@{'/user/edit/' + ${user.id}}" class="btn btn-sm btn-warning">编辑</a>
+								<button onclick="deleteUser(this)" th:data-id="${user.id}"
+									class="btn btn-sm btn-danger">删除</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 
-    <!-- JavaScript 功能区 -->
-    <script>
-        // 删除用户处理函数
-        function deleteUser(button) {
-            if (!confirm('确定要删除这个用户吗？')) return;
+	<!-- JavaScript 功能区 -->
+	<script>
+		// 删除用户
+		function deleteUser(button) {
+			if (!confirm('确定要删除这个用户吗？')) return;
 
-            const id = button.getAttribute('data-id');
-            fetch('/user/delete/' + id, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.text();
-                })
-                .then(result => {
-                    if (result.includes('成功')) {
-                        // 删除成功后移除对应行并更新计数
-                        const row = button.closest('tr');
-                        if (row) {
-                            row.remove();
-                            updateUserCount();
-                        }
-                        alert('删除成功');
-                    } else {
-                        alert(result);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('删除失败：' + error.message);
-                });
-        }
+			const id = button.getAttribute('data-id');
+			fetch('/user/delete/' + id, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' }
+			})
+				.then(response => {
+					if (!response.ok) throw new Error('Network response was not ok');
+					return response.text();
+				})
+				.then(result => {
+					if (result === '删除成功') {
+						const row = button.closest('tr');
+						if (row) {
+							row.remove();
+							updateUserCount();
+						}
+						alert('删除成功');
+					} else {
+						alert(result);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+					alert('删除失败：' + error.message);
+				});
+		}
 
-        // 更新用户总数显示
-        function updateUserCount() {
-    <div class="container mt-5">
-        <h2>用户管理</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>用户名</th>
-                    <th>邮箱</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="user : ${userList}">
-                    <td th:text="${user.id}"></td>
-                    <td th:text="${user.username}"></td>
-                    <td th:text="${user.email}"></td>
-                    <td>
-                        <a th:href="@{/user/edit/{id}(id=${user.id})}" class="btn btn-warning btn-sm">编辑</a>
-                        <button th:onclick="'deleteUser(' + ${user.id} + ')' " class="btn btn-danger btn-sm">删除</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <a href="/user/add" class="btn btn-primary">添加用户</a>
-    </div>
-
-    <script>
-        function deleteUser(id) {
-            if (confirm('确定要删除该用户吗？')) {
-                fetch('/user/delete/' + id, {
-                    method: 'POST'
-                })
-                .then(response => response.text())
-                .then(result => {
-                    alert(result);
-                    location.reload(); // 刷新页面以更新用户列表
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('删除失败：' + error);
-                });
-            }
-        }
-    </script>
+		// 更新用户总数显示
+		function updateUserCount() {
+			const countElement = document.getElementById('user-count');
+			if (countElement) {
+				const currentCount = document.querySelectorAll('tbody tr').length;
+				countElement.textContent = '现有用户总数: ' + currentCount;
+			}
+		}
+	</script>
 </body>
 
-</html> 
+</html>

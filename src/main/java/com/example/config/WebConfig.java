@@ -24,9 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	/**
 	 * 配置跨域请求
-	 * 允许所有来源访问API
 	 * 允许GET、POST、PUT、DELETE、OPTIONS方法
-	 * 允许所有请求头
 	 * 预检请求缓存时间为3600秒
 	 */
 	@Override
@@ -52,7 +50,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		// 添加图片资源映射
+		// 添加图片文件夹资源映射
 		registry.addResourceHandler("/uploads/**")
 				.addResourceLocations("file:" + uploadDir + "/");
 	}

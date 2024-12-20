@@ -13,15 +13,14 @@ USE news_db;
 -- author: 作者名称
 -- create_time: 创建时间（自动设置）
 -- update_time: 更新时间（自动更新）
-CREATE TABLE IF NOT EXISTS news
-(
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    title       VARCHAR(255) NOT NULL,
-    content     TEXT,
-    image_url   VARCHAR(255),
-    author      VARCHAR(50)  NOT NULL DEFAULT 'admin',
-    create_time DATETIME              DEFAULT CURRENT_TIMESTAMP,
-    update_time DATETIME              DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS news (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    content TEXT,
+    image_url VARCHAR(255),
+    author VARCHAR(50) NOT NULL DEFAULT 'admin',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- 创建管理员表
@@ -29,33 +28,40 @@ CREATE TABLE IF NOT EXISTS news
 -- username: 用户名（唯一）
 -- password: 密码
 -- create_time: 创建时间
-CREATE TABLE IF NOT EXISTS admin
-(
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    username    VARCHAR(50)  NOT NULL UNIQUE,
-    password    VARCHAR(100) NOT NULL,
+CREATE TABLE IF NOT EXISTS admin (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 插入默认管理员账号
 -- 仅在管理员表为空时插入
-INSERT INTO admin (username, password)
+INSERT INTO
+    admin (username, password)
 SELECT 'admin', '123456'
-WHERE NOT EXISTS (SELECT 1
-                  FROM admin
-                  WHERE username = 'admin');
+WHERE
+    NOT EXISTS (
+        SELECT 1
+        FROM admin
+        WHERE
+            username = 'admin'
+    );
 
 -- 创建用户表
 CREATE TABLE IF NOT EXISTS users (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    username    VARCHAR(50)  NOT NULL UNIQUE,
-    password    VARCHAR(255) NOT NULL,
-    email       VARCHAR(100) NOT NULL UNIQUE,
-    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 插入示例用户
-INSERT INTO users (username, password, email)
-VALUES ('user',
+INSERT INTO
+    users (username, password, email)
+VALUES (
+        'user',
         '123456',
-        '123456@example.com');
+        '123456@example.com'
+    );

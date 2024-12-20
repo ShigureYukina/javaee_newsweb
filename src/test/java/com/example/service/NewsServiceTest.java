@@ -9,25 +9,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class NewsServiceTest {
 
-    @Autowired
-    private NewsService newsService;
+	@Autowired
+	private NewsService newsService;
 
-    @Test
-    public void testGetAllNews() {
-        List<News> newsList = newsService.getAllNews();
-        assertNotNull(newsList);
-    }
+	@Test
+	public void testGetAllNews() {
+		List<News> newsList = newsService.getAllNews();
+		assertNotNull(newsList);
+	}
 
-    @Test
-    public void testGetNewsById() {
-        News news = newsService.getNewsById(1L);
-        assertNotNull(news);
-        assertEquals(Long.valueOf(1L), news.getId());
-    }
-} 
+	@Test
+	public void testGetNewsById() {
+		News news = newsService.getNewsById(1L);
+		assertNotNull(news);
+		assertEquals(Long.valueOf(1L), news.getId());
+	}
+}

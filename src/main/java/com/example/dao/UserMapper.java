@@ -23,23 +23,13 @@ public interface UserMapper {
 	@Select("SELECT * FROM users WHERE id = #{id}")
 	User findById(Long id);
 
-	// 更新用户信息（不包括密码）
+	// 更新用户信息
 	@Update("UPDATE users SET username=#{username}, email=#{email} WHERE id=#{id}")
-	void updateWithoutPassword(User user);
+	void updateUser(User user);
 
-	// 更新用户信息（包括密码）
-	@Update("UPDATE users SET username=#{username}, password=#{password}, email=#{email} WHERE id=#{id}")
-	void updateWithPassword(User user);
 
 	// 根据ID删除用户
 	@Delete("DELETE FROM users WHERE id = #{id}")
 	void deleteById(Long id);
 
-	// 检查用户名是否已存在
-	@Select("SELECT COUNT(*) FROM users WHERE username = #{username} AND id != #{id}")
-	int checkUsernameExists(@Param("username") String username, @Param("id") Long id);
-
-	// 检查邮箱是否已存在
-	@Select("SELECT COUNT(*) FROM users WHERE email = #{email} AND id != #{id}")
-	int checkEmailExists(@Param("email") String email, @Param("id") Long id);
 }

@@ -20,13 +20,13 @@ public class UserController {
 	// 登录页面
 	@GetMapping("/login")
 	public String loginPage() {
-		return "user/login"; // 返回用户登录页面
+		return "user/login";
 	}
 
 	// 注册页面
 	@GetMapping("/register")
 	public String registerPage() {
-		return "user/register"; // 返回用户注册页面
+		return "user/register";
 	}
 
 	// 处理注册请求
@@ -36,9 +36,9 @@ public class UserController {
 			@RequestParam String email) {
 		User user = new User();
 		user.setUsername(username);
-		user.setPassword(password); // 请确保密码在存储前进行加密
+		user.setPassword(password);
 		user.setEmail(email);
-		userService.register(user); // 假设您在 UserService 中有 register 方法
+		userService.register(user);
 		return "redirect:/user/login"; // 注册成功后重定向到登录页面
 	}
 
@@ -53,7 +53,7 @@ public class UserController {
 			session.setAttribute("user", user);
 			return "success"; // 登录成功
 		}
-		return "用户名或密码错误"; // 登录失败
+		return "用户名或密码错误"; // 登录失败的提示
 	}
 
 	// 退出登录
@@ -70,7 +70,7 @@ public class UserController {
 		if (session.getAttribute("admin") == null) {
 			return "redirect:/admin/login"; // 如果未登录，重定向到管理员登录页面
 		}
-		
+
 		List<User> userList = userService.getAllUsers(); // 获取所有用户
 		model.addAttribute("userList", userList); // 将用户列表添加到模型中
 		return "user/manage"; // 返回用户管理页面
@@ -88,14 +88,14 @@ public class UserController {
 	@GetMapping("/edit/{id}")
 	public String editPage(@PathVariable Long id, Model model) {
 		User user = userService.getUserById(id); // 根据ID获取用户
-		model.addAttribute("user", user); // 将用户信息添加到模型中
-		return "user/edit"; // 返回编辑用户页面
+		model.addAttribute("user", user); // 添加用户数据
+		return "user/edit"; // 重定向到编辑用户页面
 	}
 
 	// 处理编辑用户请求
 	@PostMapping("/edit")
 	public String editUser(@ModelAttribute User user) {
-		userService.updateUser(user); // 更新用户信息
+		userService.updateUser(user); // 更新用户数据
 		return "redirect:/user/manage"; // 重定向到用户管理页面
 	}
 }

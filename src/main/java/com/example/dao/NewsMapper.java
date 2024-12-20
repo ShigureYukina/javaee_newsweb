@@ -15,7 +15,7 @@ public interface NewsMapper {
 	@Select("SELECT * FROM news WHERE id = #{id}")
 	News findById(Long id);
 
-	// 插入新闻，并返回自动生成的ID
+	// 插入新闻，并返回自动生成的新闻ID
 	@Insert("INSERT INTO news (title, content, image_url, author, create_time, update_time) VALUES (#{title}, #{content}, #{imageUrl}, #{author}, #{createTime}, #{updateTime})")
 	@Options(useGeneratedKeys = true, keyProperty = "id")
 	void insert(News news);

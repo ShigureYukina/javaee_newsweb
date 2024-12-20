@@ -10,32 +10,31 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 
-@Configuration
-@MapperScan("com.example.dao")
+@Configuration // 配置类注解
+@MapperScan("com.example.dao") // 指定Mapper接口所在的包
 public class DatabaseConfig {
 
-	@Value("classpath:db/schema.sql")
+	@Value("classpath:db/schema.sql") // 指定数据库模式脚本的位置
 	private Resource schemaScript;
 
-	@Value("classpath:db/data.sql")
+	@Value("classpath:db/data.sql") // 指定数据库数据脚本的位置
 	private Resource dataScript;
 
-	@Value("${spring.sql.init.mode:never}")
+	@Value("${spring.sql.init.mode:never}") // 获取数据库初始化模式
 	private String initMode;
-
 	@Bean
 	public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
 		DataSourceInitializer initializer = new DataSourceInitializer();
-		initializer.setDataSource(dataSource);
+		initializer.setDataSource(dataSource); // 设置数据源
 
-		if ("always".equalsIgnoreCase(initMode)) {
+		if ("always".equalsIgnoreCase(initMode)) { // 如果初始化模式为always
 			ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-			resourceDatabasePopulator.addScript(schemaScript);
-			resourceDatabasePopulator.addScript(dataScript);
-			resourceDatabasePopulator.setContinueOnError(true);
-			initializer.setDatabasePopulator(resourceDatabasePopulator);
+			resourceDatabasePopulator.addScript(schemaScript); // 添加模式脚本
+			resourceDatabasePopulator.addScript(dataScript); // 添加数据脚本
+			resourceDatabasePopulator.setContinueOnError(true); // 设置继续执行脚本
+			initializer.setDatabasePopulator(resourceDatabasePopulator); // 设置数据库填充器
 		}
 
-		return initializer;
+		return initializer; // 返回数据源初始化器
 	}
 }

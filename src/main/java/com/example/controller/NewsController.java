@@ -73,7 +73,7 @@ public class NewsController {
 		}
 	}
 
-	// 简化后的上传方法
+	// 上传方法
 	@PostMapping("/upload")
 	@ResponseBody
 	public String uploadNews(@RequestParam(value = "file", required = false) MultipartFile file,
@@ -98,7 +98,7 @@ public class NewsController {
 		}
 	}
 
-	// 删除新闻
+	// 删除新闻方法
 	@PostMapping("/delete/{id}")
 	@ResponseBody
 	public String deleteNews(@PathVariable Long id) {
@@ -117,7 +117,7 @@ public class NewsController {
 		return "news/edit";
 	}
 
-	// 简化后的更新方法
+	// 更新方法
 	@PostMapping("/update")
 	@ResponseBody
 	public String updateNews(@RequestParam Long id, @RequestParam String title,
@@ -176,13 +176,11 @@ public class NewsController {
 			if (news == null) {
 				return "新闻不存在";
 			}
-
 			// 删除图片文件并更新数据库
 			if (news.getImageUrl() != null) {
 				Path imagePath = Paths.get(uploadDir,
 						news.getImageUrl().substring(news.getImageUrl().lastIndexOf("/") + 1));
 				Files.deleteIfExists(imagePath);
-
 				news.setImageUrl(null);
 				news.setUpdateTime(new Date());
 				newsService.saveNews(news);
